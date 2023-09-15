@@ -5,23 +5,33 @@ const requestListener = (req,res) => {
     res.statusCode = 200
 
     const { method,url} = req
-    if (method == "GET"){
-        res.end("<h1>Hello GET</h1>")
-    }
-    if (method === "POST"){
-        let body = []
-        req.on('data', (chunk) => {
-            body.push(chunk)
-        })
+    if (url == "/"){
+        if (method == "GET"){
+            res.end("<h1>Ini adalah homepage</h1>")
+        }else{
+            res.end(`Halaman tidak dapat diakses dengan ${method} request`)
+        }
+    }else if (url == "/about"){
+        if (method == "GET"){
+            res.end("<h1>Hi, this is about page.</h1>\n")
+        }else if (method === "POST"){
+            let body = []
+            req.on('data', (chunk) => {
+                body.push(chunk)
+            })
 
-        req.on('end',() => {
-            body = Buffer.concat(body).toString();
-            const { name } = JSON.parse(body)
-            res.end(`<h1>Hai,${name}</h1>`)
-        })
+            req.on('end',() => {
+                body = Buffer.concat(body).toString();
+                const { name } = JSON.parse(body)
+                res.end(`<h1>Hai ${name},this is about page</h1>\n`)
+            })   
+        }else{
+            res.end(`Halaman tidak dapat diakses dengan ${method} request\n`)
+        }
+    } else{
+        res.end("<h1>Halaman tidak dapat ditemukan</h1>")
     }
 }
-
 const server = http.createServer(requestListener)
 
 const port = 5000
