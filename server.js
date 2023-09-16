@@ -9,7 +9,9 @@ const requestListener = (req,res) => {
     if (url == "/"){
         if (method == "GET"){
             res.statusCode = 200
-            res.end("<h1>Ini adalah homepage</h1>")
+            res.end(JSON.stringify({
+                message:"Ini adalah halaman homepage"
+            }))
         }else{
             res.statusCode = 404
             res.end(`Halaman tidak dapat diakses dengan ${method} request`)
@@ -17,7 +19,9 @@ const requestListener = (req,res) => {
     }else if (url == "/about"){
         if (method == "GET"){
             res.statusCode = 200
-            res.end("<h1>Hi, this is about page.</h1>\n")
+            res.end(JSON.stringify({
+                message:"Ini adalah halaman about"
+            }))
         }else if (method === "POST"){
             let body = []
             req.on('data', (chunk) => {
@@ -28,15 +32,21 @@ const requestListener = (req,res) => {
                 body = Buffer.concat(body).toString();
                 const { name } = JSON.parse(body)
                 res.statusCode = 200
-                res.end(`<h1>Hai ${name},this is about page</h1>\n`)
+                res.end(JSON.stringify({
+                    message:`Hei ${name}, ini adalah halaman about.`
+                }))
             })   
         }else{
             res.statusCode = 404
-            res.end(`Halaman tidak dapat diakses dengan ${method} request\n`)
+            res.end(JSON.stringify({
+                message:`Halaman tidak dapat diakses dengan ${method} request`
+            }))
         }
     } else{
         res.statusCode = 404
-        res.end("<h1>Halaman tidak dapat ditemukan</h1>")
+        res.end(JSON.stringify({
+            message:"Halaman tidak dapat ditemukan"
+        }))
     }
 }
 const server = http.createServer(requestListener)
